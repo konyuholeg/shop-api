@@ -54,4 +54,35 @@ async function refresh() {
     }
 }
 
+const form = document.querySelector('#form');
+
+form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const Form_dani = new FormData(form)
+        const title = Form_dani.get('title')
+        const price = Number(Form_dani.get('price'))
+
+
+        try{
+            const res = await fetch('/api/products', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ title, price }),
+
+        });
+        if (!res.ok){
+            const data = await res.json()
+            errorBox.textContent = data.error;
+            return
+
+        }
+        form.reset()
+        refresh()
+
+        }catch (error){
+            errorBox.textContent = error.message;
+        }
+
+});
+
 refresh();
